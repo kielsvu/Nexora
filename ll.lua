@@ -1,7 +1,5 @@
 local Airflow = loadstring(game:HttpGet("https://raw.githubusercontent.com/kielsvu/Nexora/refs/heads/main/Modules/Nexora.lua"))()
 
--- Airflow:LoadFont({ Name = "ValleySans" })
-
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -105,10 +103,6 @@ do
         end)
     end
 end
-
-local BaBFTab = Window:CreateTab({ Name = "Build a Boat", Desc = "Auto farm and quests for Build a Boat", Icon = "ship" })
-
-BaBFTab:CreateSection("Auto Farm")
 
 local FarmRunning = false
 local FarmCharConn = nil
@@ -285,7 +279,11 @@ local function StopFarm()
     })
 end
 
-BaBFTab:CreateToggle({
+local AutoFarmTab = Window:CreateTab({ Name = "Auto Farm", Desc = "Automatic gold farming", Icon = "pickaxe" })
+
+AutoFarmTab:CreateSection("Auto Farm")
+
+AutoFarmTab:CreateToggle({
     Name = "Auto Farm Gold",
     Desc = "Automatically completes stages 2 through 10",
     CurrentValue = false,
@@ -299,7 +297,7 @@ BaBFTab:CreateToggle({
     end,
 })
 
-BaBFTab:CreateButton({
+AutoFarmTab:CreateButton({
     Name = "Reset Farm",
     Desc = "Restarts the farm loop. Does nothing if the farm is off.",
     Icon = "rotate-ccw",
@@ -321,7 +319,14 @@ BaBFTab:CreateButton({
     end,
 })
 
-BaBFTab:CreateSection("Quest")
+AutoFarmTab:CreateSection("Info")
+
+AutoFarmTab:CreateParagraph({
+    Title = "How it works",
+    Content = "Teleports your character through cave stages 2-10, collects treasure, and claims gold rewards. The farm kills your character at the end of each loop to respawn and re-run automatically.",
+})
+
+local QuestTab = Window:CreateTab({ Name = "Quest", Desc = "Auto-complete quests", Icon = "list-checks" })
 
 local Questing = false
 
@@ -562,7 +567,9 @@ local QuestFunctions = {
 
 local QuestOrder = { 1, 2, 3, 4, 6, 9 }
 
-BaBFTab:CreateButton({
+QuestTab:CreateSection("Quest")
+
+QuestTab:CreateButton({
     Name = "Auto Complete Quest",
     Desc = "Runs every implemented quest in order",
     Icon = "check",
@@ -630,26 +637,20 @@ BaBFTab:CreateButton({
     end,
 })
 
-local SettingsTab = Window:CreateTab({ Name = "Settings", Desc = "Interface and config options", Icon = "settings" })
+QuestTab:CreateSection("Info")
 
-SettingsTab:CreateSection("Interface")
-
-SettingsTab:CreateKeybind({
-    Name = "Toggle UI",
-    Desc = "Key that hides and shows the window",
-    CurrentKeybind = "RightControl",
-    OnChanged = function(Key)
-        Window:SetKeybind(Key)
-    end,
+QuestTab:CreateParagraph({
+    Title = "Implemented quests",
+    Content = "Cloud, Target, Ramp, Butter, Seat/MBox, and Cave. Dragon, broken, and soccer quests are not implemented. Already-completed quests are skipped automatically.",
 })
 
-SettingsTab:CreateConfigManager({ Name = "Configs" })
+local ExtraTab = Window:CreateTab({ Name = "Extra", Desc = "Extra utilities", Icon = "sparkles" })
 
-SettingsTab:CreateSection("Extras")
+ExtraTab:CreateSection("Extras")
 
 local Clicking = false
 
-SettingsTab:CreateButton({
+ExtraTab:CreateButton({
     Name = "Click Others Blocks",
     Desc = "Fires ClickDetector on every block other players placed",
     Icon = "mouse-pointer-click",
@@ -698,11 +699,26 @@ SettingsTab:CreateButton({
     end,
 })
 
+local SettingsTab = Window:CreateTab({ Name = "Settings", Desc = "Interface and config options", Icon = "settings" })
+
+SettingsTab:CreateSection("Interface")
+
+SettingsTab:CreateKeybind({
+    Name = "Toggle UI",
+    Desc = "Key that hides and shows the window",
+    CurrentKeybind = "RightControl",
+    OnChanged = function(Key)
+        Window:SetKeybind(Key)
+    end,
+})
+
+SettingsTab:CreateConfigManager({ Name = "Configs" })
+
 SettingsTab:CreateSection("Actions")
 
 SettingsTab:CreateButton({
     Name = "Unload",
-    Desc = "Removes the UI and stops the farm",
+    Desc = "Removes the UI and stops all active loops",
     Icon = "power",
     Style = "Danger",
     Callback = function()
