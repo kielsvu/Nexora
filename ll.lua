@@ -12,7 +12,6 @@ local UserSettings = game:GetService("UserSettings")
 local LocalPlayer = Players.LocalPlayer
 local CurrentCamera = workspace.CurrentCamera
 
--- FPS booster in background so it never blocks the UI build
 task.spawn(function()
     pcall(function()
         Lighting.GlobalShadows = false
@@ -32,7 +31,6 @@ task.spawn(function()
         pcall(disableEffect, child)
     end
 
-    -- only scan a limited depth to avoid long stalls on huge maps
     local scanned = 0
     for _, descendant in ipairs(workspace:GetDescendants()) do
         pcall(disableEffect, descendant)
@@ -87,7 +85,6 @@ end
 
 warn("[NexoraHub] Window created successfully")
 
--- Home tab extra button (safe access)
 do
     local homeTab = Window.Home or (Window.Tabs and Window.Tabs[1])
 
@@ -283,7 +280,7 @@ local function StartFarm()
     task.spawn(function() pcall(Farm) end)
 
     Airflow:Notify({
-        Title = "Build a Boat",
+        Title = "Auto Farm",
         Content = "Auto farm started.",
         Icon = "play",
         Type = "Info",
@@ -301,7 +298,7 @@ local function StopFarm()
     end
 
     Airflow:Notify({
-        Title = "Build a Boat",
+        Title = "Auto Farm",
         Content = "Auto farm stopped.",
         Icon = "square",
         Type = "Info",
@@ -310,10 +307,10 @@ local function StopFarm()
 end
 
 BaBFTab:CreateToggle({
-    Name = "Enable Auto Farm",
+    Name = "Auto Farm Gold",
     Desc = "Automatically completes stages 2 through 10",
     CurrentValue = false,
-    Flag = "BaBFTEnabled",
+    Flag = "AutoFarmGold",
     Callback = function(Value)
         if Value then
             StartFarm()
@@ -324,17 +321,28 @@ BaBFTab:CreateToggle({
 })
 
 BaBFTab:CreateButton({
-    Name = "Restart Farm",
-    Desc = "Stops and restarts the current farm loop",
+    Name = "Reset Farm",
+    Desc = "Restarts the farm loop. Does nothing if the farm is off.",
     Icon = "rotate-ccw",
     Callback = function()
+        if not FarmRunning then
+            Airflow:Notify({
+                Title = "Auto Farm",
+                Content = "Farm is not active.",
+                Icon = "alert-triangle",
+                Type = "Warning",
+                Duration = 3,
+            })
+            return
+        end
+
         StopFarm()
         task.wait(0.5)
         StartFarm()
     end,
 })
 
-BaBFTab:CreateSection("Quests")
+BaBFTab:CreateSection("Quest")
 
 local Questing = false
 
@@ -576,8 +584,8 @@ local QuestFunctions = {
 local QuestOrder = { 1, 2, 3, 4, 6, 9 }
 
 BaBFTab:CreateButton({
-    Name = "Complete Quests",
-    Desc = "Runs every implemented quest back-to-back",
+    Name = "Auto Complete Quest",
+    Desc = "Runs every implemented quest in order",
     Icon = "check",
     Style = "Primary",
     Callback = function()
@@ -643,11 +651,26 @@ BaBFTab:CreateButton({
     end,
 })
 
-BaBFTab:CreateSection("Extras")
+local SettingsTab = Window:CreateTab({ Name = "Settings", Desc = "Interface and config options", Icon = "settings" })
+
+SettingsTab:CreateSection("Interface")
+
+SettingsTab:CreateKeybind({
+    Name = "Toggle UI",
+    Desc = "Key that hides and shows the window",
+    CurrentKeybind = "RightControl",
+    OnChanged = function(Key)
+        Window:SetKeybind(Key)
+    end,
+})
+
+SettingsTab:CreateConfigManager({ Name = "Configs" })
+
+SettingsTab:CreateSection("Extras")
 
 local Clicking = false
 
-BaBFTab:CreateButton({
+SettingsTab:CreateButton({
     Name = "Click Others Blocks",
     Desc = "Fires ClickDetector on every block other players placed",
     Icon = "mouse-pointer-click",
@@ -659,6 +682,13 @@ BaBFTab:CreateButton({
             local Blocks = workspace:FindFirstChild("Blocks")
             if not Blocks then
                 Clicking = false
+                Airflow:Notify({
+                    Title = "Blocks",
+                    Content = "Blocks folder not found.",
+                    Icon = "alert-triangle",
+                    Type = "Warning",
+                    Duration = 3,
+                })
                 return
             end
 
@@ -689,16 +719,25 @@ BaBFTab:CreateButton({
     end,
 })
 
-BaBFTab:CreateSection("Info")
+SettingsTab:CreateSection("Actions")
 
-BaBFTab:CreateParagraph({
-    Title = "Auto Farm",
-    Content = "Teleports your character through cave stages 2-10, collects treasure, and claims gold rewards. Kill your character at the end of each loop to trigger respawn and re-run.",
-})
+SettingsTab:CreateButton({
+    Name = "Unload",
+    Desc = "Removes the UI and stops the farm",
+    Icon = "power",
+    Style = "Danger",
+    Callback = function()
+        FarmRunning = false
+        Questing = false
+        Clicking = false
 
-BaBFTab:CreateParagraph({
-    Title = "Quests",
-    Content = "Runs every implemented quest in order. Skips quests you've already completed. Dragon, broken, and soccer quests are not implemented.",
+        if FarmCharConn then
+            FarmCharConn:Disconnect()
+            FarmCharConn = nil
+        end
+
+        Window:Destroy()
+    end,
 })
 
 Airflow:Notify({
