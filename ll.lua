@@ -8,6 +8,49 @@ local UserSettings = game:GetService("UserSettings")
 local LocalPlayer = Players.LocalPlayer
 local CurrentCamera = workspace.CurrentCamera
 
+local c = string.char
+
+local Name = {
+    OtherData        = c(79, 116, 104, 101, 114, 68, 97, 116, 97),
+    BoatStages       = c(66, 111, 97, 116, 83, 116, 97, 103, 101, 115),
+    NormalStages     = c(78, 111, 114, 109, 97, 108, 83, 116, 97, 103, 101, 115),
+    CaveStage        = c(67, 97, 118, 101, 83, 116, 97, 103, 101),
+    DarknessPart     = c(68, 97, 114, 107, 110, 101, 115, 115, 80, 97, 114, 116),
+    Stage            = c(83, 116, 97, 103, 101),
+    Humanoid         = c(72, 117, 109, 97, 110, 111, 105, 100),
+    TheEnd           = c(84, 104, 101, 69, 110, 100),
+    GoldenChest      = c(71, 111, 108, 100, 101, 110, 67, 104, 101, 115, 116),
+    Trigger          = c(84, 114, 105, 103, 103, 101, 114),
+    End              = c(69, 110, 100),
+    ClaimRemote      = c(67, 108, 97, 105, 109, 82, 105, 118, 101, 114, 82, 101, 115, 117, 108, 116, 115, 71, 111, 108, 100),
+    QuestMaker       = c(81, 117, 101, 115, 116, 77, 97, 107, 101, 114, 69, 118, 101, 110, 116),
+    Quest            = c(81, 117, 101, 115, 116),
+    Q                = c(81),
+    Blocks           = c(66, 108, 111, 99, 107, 115),
+    TeamColor        = c(84, 101, 97, 109, 67, 111, 108, 111, 114),
+    Zone             = c(90, 111, 110, 101),
+    Cloud            = c(67, 108, 111, 117, 100),
+    Part1            = c(80, 97, 114, 116, 49),
+    Target           = c(84, 97, 114, 103, 101, 116),
+    Part             = c(80, 97, 114, 116),
+    Ramp             = c(82, 97, 109, 112),
+    Butter           = c(66, 117, 116, 116, 101, 114),
+    PPart            = c(80, 80, 97, 114, 116),
+    MBox             = c(77, 66, 111, 120),
+    Seat             = c(83, 101, 97, 116),
+    VoteLaunch       = c(86, 111, 116, 101, 76, 97, 117, 110, 99, 104, 82, 69),
+    BuildingTool     = c(66, 117, 105, 108, 100, 105, 110, 103, 84, 111, 111, 108),
+    RF               = c(82, 70),
+    Backpack         = c(66, 97, 99, 107, 112, 97, 99, 107),
+    Character        = c(67, 104, 97, 114, 97, 99, 116, 101, 114),
+    CameraDome       = c(67, 97, 109, 101, 114, 97, 68, 111, 109, 101),
+    BasePart         = c(66, 97, 115, 101, 80, 97, 114, 116),
+    ClickDetector    = c(67, 108, 105, 99, 107, 68, 101, 116, 101, 99, 116, 111, 114),
+    TouchTransmitter = c(84, 111, 117, 99, 104, 84, 114, 97, 110, 115, 109, 105, 116, 116, 101, 114),
+    Script           = c(83, 99, 114, 105, 112, 116),
+    SeatClass        = c(83, 101, 97, 116),
+}
+
 task.spawn(function()
     pcall(function()
         Lighting.GlobalShadows = false
@@ -108,40 +151,40 @@ local FarmRunning = false
 local FarmCharConn = nil
 
 local function getOtherData()
-    return LocalPlayer:FindFirstChild("OtherData")
+    return LocalPlayer:FindFirstChild(Name.OtherData)
 end
 
 local function getBoatStages()
-    return workspace:FindFirstChild("BoatStages")
+    return workspace:FindFirstChild(Name.BoatStages)
 end
 
 local function getClaimRemote()
-    return workspace:FindFirstChild("ClaimRiverResultsGold")
+    return workspace:FindFirstChild(Name.ClaimRemote)
 end
 
 local function CollectStage(StageNumber)
     local stages = getBoatStages()
     if not stages then return end
 
-    local normalStages = stages:FindFirstChild("NormalStages")
+    local normalStages = stages:FindFirstChild(Name.NormalStages)
     if not normalStages then return end
 
-    local Stage = normalStages:FindFirstChild("CaveStage" .. StageNumber)
+    local Stage = normalStages:FindFirstChild(Name.CaveStage .. StageNumber)
     if not Stage then return end
 
-    local Collect = Stage:FindFirstChild("DarknessPart")
+    local Collect = Stage:FindFirstChild(Name.DarknessPart)
     if not Collect then return end
 
     local otherData = getOtherData()
     if not otherData then return end
 
-    local StageData = otherData:FindFirstChild("Stage" .. (StageNumber - 1))
+    local StageData = otherData:FindFirstChild(Name.Stage .. (StageNumber - 1))
     if not StageData then return end
 
     local Char = LocalPlayer.Character
     if not Char then return end
 
-    local Hum = Char:FindFirstChildOfClass("Humanoid")
+    local Hum = Char:FindFirstChildOfClass(Name.Humanoid)
     if not Hum then return end
 
     repeat
@@ -149,7 +192,7 @@ local function CollectStage(StageNumber)
         if not Char or not Char.Parent then continue end
         Char:PivotTo(Collect.CFrame * CFrame.new(0, 0, -20))
         for _, BodyPart in ipairs(Char:GetChildren()) do
-            if BodyPart:IsA("BasePart") then
+            if BodyPart:IsA(Name.BasePart) then
                 BodyPart.Velocity = Vector3.zero
                 BodyPart.RotVelocity = Vector3.zero
             end
@@ -162,28 +205,28 @@ local function TouchChest()
         local Char = LocalPlayer.Character
         if not Char then return end
 
-        local Hum = Char:FindFirstChildOfClass("Humanoid")
+        local Hum = Char:FindFirstChildOfClass(Name.Humanoid)
         if not Hum then return end
 
         local stages = getBoatStages()
         if not stages then return end
 
-        local normalStages = stages:FindFirstChild("NormalStages")
+        local normalStages = stages:FindFirstChild(Name.NormalStages)
         if not normalStages then return end
 
-        local TheEnd = normalStages:FindFirstChild("TheEnd")
+        local TheEnd = normalStages:FindFirstChild(Name.TheEnd)
         if not TheEnd then return end
 
-        local GoldenChest = TheEnd:FindFirstChild("GoldenChest")
+        local GoldenChest = TheEnd:FindFirstChild(Name.GoldenChest)
         if not GoldenChest then return end
 
-        local Trigger = GoldenChest:FindFirstChild("Trigger")
+        local Trigger = GoldenChest:FindFirstChild(Name.Trigger)
         if not Trigger then return end
 
         local otherData = getOtherData()
         if not otherData then return end
 
-        local EndData = otherData:FindFirstChild("End")
+        local EndData = otherData:FindFirstChild(Name.End)
         if not EndData then return end
 
         repeat
@@ -203,7 +246,7 @@ local function Farm()
     local Char = LocalPlayer.Character
     if not Char then return end
 
-    local Hum = Char:WaitForChild("Humanoid", 5)
+    local Hum = Char:WaitForChild(Name.Humanoid, 5)
     if not Hum then return end
 
     local claimRemote = getClaimRemote()
@@ -333,32 +376,32 @@ local Questing = false
 local function GetZone()
     local teamColor = LocalPlayer.TeamColor
     if not teamColor then return nil end
-    return workspace:FindFirstChild(teamColor.Name .. "Zone")
+    return workspace:FindFirstChild(teamColor.Name .. Name.Zone)
 end
 
 local function GetQuest()
     local Zone = GetZone()
     if not Zone then return nil end
-    return Zone:FindFirstChild("Quest")
+    return Zone:FindFirstChild(Name.Quest)
 end
 
-local function Place(Name, Pos)
-    local BTool = LocalPlayer.Backpack:FindFirstChild("BuildingTool")
+local function Place(BlockName, Pos)
+    local BTool = LocalPlayer.Backpack:FindFirstChild(Name.BuildingTool)
     if BTool then
         BTool.Parent = LocalPlayer.Character
     else
-        BTool = LocalPlayer.Character:FindFirstChild("BuildingTool")
+        BTool = LocalPlayer.Character:FindFirstChild(Name.BuildingTool)
     end
 
     if not BTool then return end
 
     task.spawn(function()
-        local RF = BTool:FindFirstChild("RF")
+        local RF = BTool:FindFirstChild(Name.RF)
         if not RF then return end
         pcall(function()
             RF:InvokeServer(
-                Name,
-                LocalPlayer.Data[Name].Value,
+                BlockName,
+                LocalPlayer.Data[BlockName].Value,
                 nil,
                 nil,
                 false,
@@ -373,9 +416,9 @@ local QuestFunctions = {
     [1] = function()
         local Quest = GetQuest()
         if not Quest then return end
-        local Cloud = Quest:WaitForChild("Cloud", 5)
+        local Cloud = Quest:WaitForChild(Name.Cloud, 5)
         if not Cloud then return end
-        local Part1 = Cloud:WaitForChild("Part1", 5)
+        local Part1 = Cloud:WaitForChild(Name.Part1, 5)
         if not Part1 then return end
         Part1.CFrame = LocalPlayer.Character:GetPivot()
     end,
@@ -383,13 +426,13 @@ local QuestFunctions = {
     [2] = function()
         local Quest = GetQuest()
         if not Quest then return end
-        local Target = Quest:WaitForChild("Target", 5)
+        local Target = Quest:WaitForChild(Name.Target, 5)
         if not Target then return end
 
         local Done = false
         repeat
             for _, Part in ipairs(Target:GetChildren()) do
-                if Part.Name == "Part" and Part:FindFirstChildOfClass("Script") then
+                if Part.Name == Name.Part and Part:FindFirstChildOfClass(Name.Script) then
                     Done = true
                     Part.CFrame = LocalPlayer.Character:GetPivot()
                     break
@@ -402,13 +445,13 @@ local QuestFunctions = {
     [3] = function()
         local Quest = GetQuest()
         if not Quest then return end
-        local Ramp = Quest:WaitForChild("Ramp", 5)
+        local Ramp = Quest:WaitForChild(Name.Ramp, 5)
         if not Ramp then return end
 
         local Done = false
         repeat
             for _, Part in ipairs(Ramp:GetChildren()) do
-                if Part.Name == "Part" and Part:FindFirstChildOfClass("TouchTransmitter") then
+                if Part.Name == Name.Part and Part:FindFirstChildOfClass(Name.TouchTransmitter) then
                     Done = true
                     Part.CFrame = LocalPlayer.Character:GetPivot()
                     break
@@ -428,17 +471,17 @@ local QuestFunctions = {
             local Quest = GetQuest()
             if not Quest then break end
 
-            local Butter = Quest:FindFirstChild("Butter")
+            local Butter = Quest:FindFirstChild(Name.Butter)
             if not Butter then continue end
 
-            local Part = Butter:FindFirstChild("PPart")
+            local Part = Butter:FindFirstChild(Name.PPart)
             if not Part then continue end
 
-            local Click = Part:FindFirstChildOfClass("ClickDetector")
+            local Click = Part:FindFirstChildOfClass(Name.ClickDetector)
             if not Click then continue end
 
             pcall(fireclickdetector, Click)
-        until not Zone:FindFirstChild("Quest")
+        until not Zone:FindFirstChild(Name.Quest)
     end,
 
     [6] = function()
@@ -448,15 +491,15 @@ local QuestFunctions = {
         local Quest = GetQuest()
         if not Quest then return end
 
-        local MBox = Quest:WaitForChild("MBox", 5)
+        local MBox = Quest:WaitForChild(Name.MBox, 5)
         if not MBox then return end
 
-        local PPart = MBox:WaitForChild("PPart", 5)
+        local PPart = MBox:WaitForChild(Name.PPart, 5)
         if not PPart then return end
 
-        Place("Seat", PPart.CFrame * CFrame.new(2, 0, 0))
+        Place(Name.Seat, PPart.CFrame * CFrame.new(2, 0, 0))
 
-        local Blocks = workspace:FindFirstChild("Blocks")
+        local Blocks = workspace:FindFirstChild(Name.Blocks)
         if not Blocks then return end
 
         local BlocksFolder = Blocks:FindFirstChild(LocalPlayer.Name)
@@ -466,16 +509,16 @@ local QuestFunctions = {
         BlocksFolder.ChildAdded:Once(function(SeatModel)
             local Char = LocalPlayer.Character
             if not Char then return end
-            local Hum = Char:FindFirstChildOfClass("Humanoid")
+            local Hum = Char:FindFirstChildOfClass(Name.Humanoid)
             if not Hum then return end
 
-            local Seat = SeatModel:WaitForChild("Seat", 5)
+            local Seat = SeatModel:WaitForChild(Name.Seat, 5)
             if Seat then
                 pcall(function() Seat:Sit(Hum) end)
                 repeat task.wait() until Hum.Sit or not Questing
             end
 
-            local VoteLaunch = Zone:FindFirstChild("VoteLaunchRE")
+            local VoteLaunch = Zone:FindFirstChild(Name.VoteLaunch)
             if VoteLaunch then
                 pcall(function() VoteLaunch:FireServer() end)
             end
@@ -484,13 +527,13 @@ local QuestFunctions = {
 
             local stages = getBoatStages()
             if stages then
-                local normalStages = stages:FindFirstChild("NormalStages")
+                local normalStages = stages:FindFirstChild(Name.NormalStages)
                 if normalStages then
-                    local TheEnd = normalStages:FindFirstChild("TheEnd")
+                    local TheEnd = normalStages:FindFirstChild(Name.TheEnd)
                     if TheEnd then
-                        local GoldenChest = TheEnd:FindFirstChild("GoldenChest")
+                        local GoldenChest = TheEnd:FindFirstChild(Name.GoldenChest)
                         if GoldenChest then
-                            local Trigger = GoldenChest:FindFirstChild("Trigger")
+                            local Trigger = GoldenChest:FindFirstChild(Name.Trigger)
                             if Trigger then
                                 pcall(function() Char:PivotTo(Trigger.CFrame) end)
                             end
@@ -510,25 +553,25 @@ local QuestFunctions = {
         local stages = getBoatStages()
         if not stages then return end
 
-        local normalStages = stages:FindFirstChild("NormalStages")
+        local normalStages = stages:FindFirstChild(Name.NormalStages)
         if not normalStages then return end
 
-        local CaveStage1 = normalStages:FindFirstChild("CaveStage1")
+        local CaveStage1 = normalStages:FindFirstChild(Name.CaveStage .. 1)
         if not CaveStage1 then return end
 
-        local Collect = CaveStage1:FindFirstChild("DarknessPart")
+        local Collect = CaveStage1:FindFirstChild(Name.DarknessPart)
         if not Collect then return end
 
         local otherData = getOtherData()
         if not otherData then return end
 
-        local StageData = otherData:FindFirstChild("Stage0")
+        local StageData = otherData:FindFirstChild(Name.Stage .. 0)
         if not StageData then return end
 
         local Char = LocalPlayer.Character
         if not Char then return end
 
-        local Hum = Char:FindFirstChildOfClass("Humanoid")
+        local Hum = Char:FindFirstChildOfClass(Name.Humanoid)
         if not Hum then return end
 
         repeat
@@ -539,7 +582,7 @@ local QuestFunctions = {
             Char:PivotTo(Collect.CFrame * CFrame.new(0, -60, -10))
 
             for _, BodyPart in ipairs(Char:GetChildren()) do
-                if BodyPart:IsA("BasePart") then
+                if BodyPart:IsA(Name.BasePart) then
                     BodyPart.Velocity = Vector3.zero
                     BodyPart.RotVelocity = Vector3.zero
                 end
@@ -548,13 +591,13 @@ local QuestFunctions = {
 
         local stages2 = getBoatStages()
         if stages2 then
-            local ns = stages2:FindFirstChild("NormalStages")
+            local ns = stages2:FindFirstChild(Name.NormalStages)
             if ns then
-                local TheEnd = ns:FindFirstChild("TheEnd")
+                local TheEnd = ns:FindFirstChild(Name.TheEnd)
                 if TheEnd then
-                    local GC = TheEnd:FindFirstChild("GoldenChest")
+                    local GC = TheEnd:FindFirstChild(Name.GoldenChest)
                     if GC then
-                        local Trig = GC:FindFirstChild("Trigger")
+                        local Trig = GC:FindFirstChild(Name.Trigger)
                         if Trig and LocalPlayer.Character then
                             pcall(function() LocalPlayer.Character:PivotTo(Trig.CFrame) end)
                         end
@@ -579,7 +622,7 @@ QuestTab:CreateButton({
         Questing = true
 
         task.spawn(function()
-            local StartQuest = workspace:FindFirstChild("QuestMakerEvent")
+            local StartQuest = workspace:FindFirstChild(Name.QuestMaker)
             if not StartQuest then
                 Questing = false
                 Airflow:Notify({
@@ -593,9 +636,9 @@ QuestTab:CreateButton({
             end
 
             local Zone = GetZone()
-            if Zone and Zone:FindFirstChild("Quest") then
+            if Zone and Zone:FindFirstChild(Name.Quest) then
                 StartQuest:FireServer(0)
-                repeat task.wait() until not Zone:FindFirstChild("Quest") or not Questing
+                repeat task.wait() until not Zone:FindFirstChild(Name.Quest) or not Questing
                 task.wait(1)
             end
 
@@ -607,7 +650,7 @@ QuestTab:CreateButton({
 
             for _, Num in ipairs(QuestOrder) do
                 if not Questing then break end
-                if otherData:FindFirstChild("Q" .. Num) then
+                if otherData:FindFirstChild(Name.Q .. Num) then
                     continue
                 end
 
@@ -619,7 +662,7 @@ QuestTab:CreateButton({
 
                 local currentZone = GetZone()
                 if currentZone then
-                    repeat task.wait() until not currentZone:FindFirstChild("Quest") or not Questing
+                    repeat task.wait() until not currentZone:FindFirstChild(Name.Quest) or not Questing
                 end
                 task.wait(1)
             end
@@ -659,7 +702,7 @@ ExtraTab:CreateButton({
         Clicking = true
 
         task.spawn(function()
-            local Blocks = workspace:FindFirstChild("Blocks")
+            local Blocks = workspace:FindFirstChild(Name.Blocks)
             if not Blocks then
                 Clicking = false
                 Airflow:Notify({
@@ -676,9 +719,9 @@ ExtraTab:CreateButton({
                 if Folder.Name == LocalPlayer.Name then continue end
 
                 for _, Block in ipairs(Folder:GetChildren()) do
-                    if Block.Name == "CameraDome" then continue end
+                    if Block.Name == Name.CameraDome then continue end
 
-                    local Click = Block:FindFirstChildOfClass("ClickDetector")
+                    local Click = Block:FindFirstChildOfClass(Name.ClickDetector)
                     if Click then
                         pcall(fireclickdetector, Click)
                         task.wait()
