@@ -41,7 +41,7 @@ end)
 local Window = Airflow:CreateWindow({
     Name = "NexoraHub",
     Icon = "lucide:terminal",
-    LoadingSubtitle = "discord.gg/rxsAtJtWbF",
+    LoadingSubtitle = "By Kiel & Day",
     Theme = "Rose",
     ToggleUIKeybind = "RightControl",
     OpenButton = { Title = "NexoraHub", Icon = "lucide:terminal", Locked = true },
