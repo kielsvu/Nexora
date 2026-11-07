@@ -2088,7 +2088,7 @@ function e.Window(ac, k)
     k = n(k, {Name = "Title", LoadingSubtitle = "Subtitle", ToggleUIKeybind = "Keybind"})
     if k.Theme ~= nil then e:SetTheme(k.Theme) end
     local V = k.Size or UDim2.fromOffset(640, 480)
-    local N = F(k.Keybind) or Enum.KeyCode.RightControl
+    local N = F(k.Keybind) or Enum.KeyCode.LeftShift
     local d = setmetatable({
         Tabs = {},
         Flags = {},
